@@ -1,12 +1,22 @@
+import * as L from "leaflet";
+
 export class GraphNode {
     id: number;
     coord: Coord;
     neighs: GraphNode[];
+    marker: L.Marker;
+    lines: L.Polyline[];
+    parent_map: L.Map;
+    click_handler: L.LeafletEventHandlerFn;
 
-    constructor(id: number, coord: Coord) {
+    constructor(id: number, coord: Coord, map: L.Map, icon: L.Icon, click_handler: L.LeafletEventHandlerFn) {
         this.id = id;
         this.coord = coord;
         this.neighs = new Array();
+        this.marker = L.marker(coord, {title: id.toString(), icon:icon}).addTo(map).on("click", click_handler);
+        this.lines = new Array();
+        this.parent_map = map;
+        this.click_handler = click_handler;
     }
 
     connect_to(node: GraphNode) {
@@ -26,6 +36,16 @@ export class GraphNode {
     csvfy(): string{
         return ""+this.id+","+this.coord.lat+","+this.coord.lng+",";
     }
+
+    undraw() {
+        this.parent_map.removeLayer(this.marker);
+        this.lines.forEach(line => this.parent_map.removeLayer(line));
+    }
+
+    set_icon(icon: L.Icon) {
+        this.parent_map.removeLayer(this.marker);
+        this.marker = L.marker(this.coord, {title: this.id.toString(), icon:icon}).addTo(this.parent_map).on("click", this.click_handler);
+    }
 }
 
 export interface Coord {
@@ -41,8 +61,8 @@ export class Graph{
         this.node_count = 0;
     }
 
-    add_node(c: Coord) {
-        const n = new GraphNode(this.node_count, c);
+    add_node(c: Coord, map: L.Map, icon: L.Icon, click_hadler: L.LeafletEventHandlerFn) {
+        const n = new GraphNode(this.node_count, c, map, icon, click_hadler);
         this.nodes.set(this.node_count, n);
         this.node_count += 1;
         return n;
@@ -60,6 +80,8 @@ export class Graph{
                 delete v.neighs[v.neighs.indexOf(node)];
             }
         })
+        
+        node.undraw();
 
         this.nodes.delete(id);
     }
