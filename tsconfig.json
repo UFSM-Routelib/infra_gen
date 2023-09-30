@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "module": "es6",
+        "target": "es5",
+        "esModuleInterop": true,
+        "lib": [
+            "es6",
+            "dom"
+        ],
+        "moduleResolution": "bundler",
+
+        "rootDir": "src/scripts",
+        "outDir": "src/dist",
+
+        "baseUrl": ".", // Required for paths
+        "paths": {
+            "https://cdn.jsdelivr.net/npm/leaflet@1.8.0/dist/leaflet-src.esm.js": [
+                "node_modules/@types/leaflet/index" // Re-map to the type
+            ]
+        }
+    }
+}
