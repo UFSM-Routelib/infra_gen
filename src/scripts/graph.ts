@@ -90,6 +90,29 @@ export class Graph{
     get_node(id: number): GraphNode | undefined {
         return this.nodes.get(id);
     }
+
+    csvfy(): string{
+        // header of the csv file
+        let content: string = "FISICO_FONTE,FONTE_X,FONTE_Y,FISICO_NO,NO_X,NO_Y,\n"
+        console.log(this.nodes);
+        this.nodes.forEach((n, _) => {
+            console.log("node: " + n.id);
+            n.neighs.forEach((neigh) => {
+                console.log("neigh: " + neigh.id);
+                content = content.concat(n.csvfy().concat(neigh.csvfy())+"\n");
+            });
+        });
+        return content;
+    }
+
+    download() {
+        const a = document.createElement('a');
+        const file = new Blob([this.csvfy()])
+        a.href= URL.createObjectURL(file);
+        a.download = "graph.csv";
+        a.click();
+        URL.revokeObjectURL(a.href);
+    }
 }   
 
     

@@ -25,6 +25,10 @@ async function initMap() {
         }
     })
 
+    document.getElementById("downloader")?.addEventListener("click", () => {
+        g.download();
+    })
+
     map.on("click", (event: any) => {        
         const node = g.add_node(event.latlng, map, node_icon,
         () => {
