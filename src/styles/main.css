@@ -4,6 +4,33 @@ body {
 }
 
 #map {
-    height: 50%;
+    height: 70%;
     width: 100%;
 }
+
+#node-info {
+    display: flex;
+    flex-direction: row;
+    height: 10%;
+    widows: 100%;
+}
+
+#downloader {
+    color: white;
+    background-color: green;
+}
+
+#delete-node {
+    color: white;
+    background-color: red;
+}
+
+#node-info > div {
+    margin: 5%;
+    display: grid;
+    place-items: center;
+    height: 50%;
+    width: fit-content;
+    border: 1px solid black;
+}
+

@@ -15,8 +15,8 @@ async function initMap() {
     
     const g = new Graph();
     let selected: GraphNode | undefined = undefined;
-    const node_icon = new L.Icon({iconUrl: "http://localhost:3000/styles/images/node_icon.png", iconSize: [40, 40]})
-    const highlighted_icon = new L.Icon({iconUrl: "http://localhost:3000/styles/images/selected_node_icon.png", iconSize: [40, 40]})
+    const node_icon = new L.Icon({iconUrl: "http://localhost:3000/styles/images/poste_icon.png", iconSize: [35, 35]})
+    const highlighted_icon = new L.Icon({iconUrl: "http://localhost:3000/styles/images/selected_poste_icon.png", iconSize: [35, 35]})
 
     document.getElementById("delete-node")?.addEventListener("click", () => {
         if (selected !== undefined) {
