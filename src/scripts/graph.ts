@@ -34,7 +34,7 @@ export class GraphNode {
     }
 
     csvfy(): string{
-        return ""+this.id+","+this.coord.lat+","+this.coord.lng+",";
+        return ""+this.id+"\t"+this.coord.lat+"\t"+this.coord.lng+"\t";
     }
 
     undraw() {
@@ -93,7 +93,7 @@ export class Graph{
 
     csvfy(): string{
         // header of the csv file
-        let content: string = "FISICO_FONTE,FONTE_X,FONTE_Y,FISICO_NO,NO_X,NO_Y,\n"
+        let content: string = "FISICO_FONTE\tFONTEX\tFONTEY\tFISICO_NO\tNOX\tNOY\t\n"
         console.log(this.nodes);
         this.nodes.forEach((n, _) => {
             console.log("node: " + n.id);
