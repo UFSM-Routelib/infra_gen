@@ -10,10 +10,15 @@
 
         <div id="map"></div>
 
-        <div id="node-info">
+        <div id="info">
             <div id="node-info-text">Nothing selected</div>
             <div id="delete-node">delete</div>
             <div id="downloader">Download Graph as CSV</div>
+            <div id="loader" onclick="document.getElementById('file_entry').click();">
+                <input type="file" id="file_entry" style="display: none;">
+                <label>Load nodes from CSV</label>
+            </div>
+
         </div>
 
     </body>

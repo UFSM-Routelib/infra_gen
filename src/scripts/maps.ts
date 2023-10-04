@@ -1,5 +1,5 @@
 import * as L from "leaflet";
-import {Graph, GraphNode} from "./graph";
+import {Graph} from "./graph";
 import * as dom from "./dom";
 
 async function initMap() {
@@ -11,58 +11,55 @@ async function initMap() {
 
     let map = L.map('map', map_opts)
     let layer = new L.TileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png');
-    layer.addTo(map);
     
-    const g = new Graph();
-    let selected: GraphNode | undefined = undefined;
+    const g = new Graph(map);
+    layer.addTo(g.map);
+
     const node_icon = new L.Icon({iconUrl: "http://localhost:3000/styles/images/poste_icon.png", iconSize: [35, 35]})
     const highlighted_icon = new L.Icon({iconUrl: "http://localhost:3000/styles/images/selected_poste_icon.png", iconSize: [35, 35]})
 
     document.getElementById("delete-node")?.addEventListener("click", () => {
-        if (selected !== undefined) {
-            g.remove_node(selected.id);  
-            selected = undefined;
-        }
+        g.rm_selected();
     })
 
     document.getElementById("downloader")?.addEventListener("click", () => {
         g.download();
     })
 
-    map.on("click", (event: any) => {        
-        const node = g.add_node(event.latlng, map, node_icon,
+    document.getElementById("file_entry")?.addEventListener("change", () => {
+        const input = (<HTMLInputElement>document.getElementById("file_entry"));
+        const files = input?.files;
+        if (files === null || files === undefined) {
+            return;
+        }
+        g.load_csv(files[0], node_icon, highlighted_icon);
+    })
+
+    g.map.on("click", (event: any) => {        
+        g.debug_info();
+        const node = g.add_node(event.latlng, node_icon,
+        //this function is repeated in g.load_csv() so thats a possible useful refactor
         () => {
-            if (selected === undefined) {
-                selected = node; 
-                selected.set_icon(highlighted_icon);
-                dom.set_node_info(selected.text_info());
+            if (g.selected === undefined) {
+                g.selected = node; 
+                g.selected.set_icon(highlighted_icon);
+                dom.set_node_info(g.selected.text_info());
                 return
             }
 
-            if (selected.id === node.id) {
-                selected = undefined;
+            if (g.selected.id === node.id) {
+                g.selected = undefined;
                 node.set_icon(node_icon);
                 dom.set_node_info("Nothing selected");
                 return;
             }
 
-            selected.connect_to(node);
-            
-            // hopefuly leaflet has an optimization to not a gazilion identical lines on the exata same path
-            const line = new L.Polyline([selected.coord, node.coord], {
-                color: '#ff0000',
-                weight: 3,
-                opacity: 1,
-                smoothFactor: 1
-            }).addTo(map);
+            g.selected.connect_to(node);
 
-            selected.lines.push(line);
-            node.lines.push(line);
-
-            selected.set_icon(node_icon);
-            selected = node;
-            selected.set_icon(highlighted_icon);
-            dom.set_node_info(selected.text_info());
+            g.selected.set_icon(node_icon);
+            g.selected = node;
+            g.selected.set_icon(highlighted_icon);
+            dom.set_node_info(g.selected.text_info());
         });
     });
 }
